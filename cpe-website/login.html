@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理者登入</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <h2>管理者登入</h2>
+  <input type="email" id="email" placeholder="電子郵件"><br>
+  <input type="password" id="password" placeholder="密碼"><br>
+  <button id="loginBtn">登入</button>
+  <script type="module">
+    import { auth, signInWithEmailAndPassword } from './firebase.js';
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        alert("登入失敗：" + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

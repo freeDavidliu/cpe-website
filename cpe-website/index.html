@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>基督權能福音教會</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script type="module" src="firebase.js"></script>
+</head>
+<body>
+  <header>
+    <h1>基督權能福音教會</h1>
+    <nav><a href="login.html">管理者登入</a></nav>
+  </header>
+  <main>
+    <section>
+      <h2>主日講道影片</h2>
+      <div id="videos"></div>
+    </section>
+    <section>
+      <h2>主日週報</h2>
+      <ul id="bulletins"></ul>
+    </section>
+    <section>
+      <h2>最新課程</h2>
+      <ul id="courses"></ul>
+    </section>
+  </main>
+  <script type="module">
+    import { db, collection, getDocs } from './firebase.js';
+
+    async function renderData() {
+      const videosSnap = await getDocs(collection(db, "videos"));
+      const bulletinsSnap = await getDocs(collection(db, "bulletins"));
+      const coursesSnap = await getDocs(collection(db, "courses"));
+
+      const videosContainer = document.getElementById("videos");
+      videosSnap.forEach(doc => {
+        const data = doc.data();
+        const iframe = document.createElement("iframe");
+        iframe.src = `https://www.youtube.com/embed/${data.youtubeId}`;
+        iframe.width = "560";
+        iframe.height = "315";
+        iframe.allowFullscreen = true;
+        videosContainer.appendChild(iframe);
+      });
+
+      const bulletinsContainer = document.getElementById("bulletins");
+      bulletinsSnap.forEach(doc => {
+        const data = doc.data();
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${data.link}" target="_blank">${data.title}</a>`;
+        bulletinsContainer.appendChild(li);
+      });
+
+      const coursesContainer = document.getElementById("courses");
+      coursesSnap.forEach(doc => {
+        const data = doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${data.title} - ${data.date}`;
+        coursesContainer.appendChild(li);
+      });
+    }
+
+    renderData();
+  </script>
+</body>
+</html>
